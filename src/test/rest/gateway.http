@@ -1,0 +1,33 @@
+@URL=http://localhost:8080/gateway
+
+### GET ALL
+GET {{URL}}
+
+### GET BY NUMBER
+GET {{URL}}/1
+
+
+### ADD GATEWAY
+POST {{URL}}
+Content-Type: application/json
+
+{
+  "nome": "Gateway Central",
+  "descricao": "Gateway principal para gerenciamento de dispositivos IoT",
+  "endereco": "192.168.1.100",
+  "dispositivos": [
+    {
+      "nome": "Sensor de Temperatura",
+      "sensores": [],
+      "Atuadores": []
+    },
+    {
+      "nome": "Câmera de Segurança",
+      "sensores": [],
+      "Atuadores": []
+    }
+  ],
+  "pessoa": {
+    "id": 1
+  }
+}

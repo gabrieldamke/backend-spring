@@ -1,0 +1,12 @@
+@URL=http://localhost:8080/sensor
+
+
+### CREATE
+POST {{URL}}
+Content-Type: application/json
+
+{
+    "nome": "Sensor da nasa",
+    "tipo": "Muito top",
+    "medicoes": []
+}

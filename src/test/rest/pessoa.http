@@ -1,0 +1,25 @@
+@URL=http://localhost:8080/pessoa
+
+### GET ALL (Obter todas as pessoas)
+GET {{URL}}
+
+### GET BY ID (Obter pessoa pelo ID)
+GET {{URL}}/1
+
+### CREATE (Criar uma nova pessoa)
+POST {{URL}}
+Content-Type: application/json
+
+{
+   "nome": "Joao da silva",
+   "gateways": []
+}
+
+### UPDATE (Atualizar uma pessoa existente)
+PUT {{URL}}/1
+Content-Type: application/json
+
+{
+    "nome": "John Smith"
+
+}
