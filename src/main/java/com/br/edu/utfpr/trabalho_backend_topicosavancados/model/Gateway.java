@@ -2,6 +2,9 @@ package com.br.edu.utfpr.trabalho_backend_topicosavancados.model;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +22,6 @@ import lombok.Data;
 @Entity
 @Table(name = "tb_gateway")
 public class Gateway {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -32,12 +34,13 @@ public class Gateway {
 
     @Column(nullable = false)
     private String endereco;
-
+    
     @OneToMany(mappedBy = "gateway", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Set<Dispositivo> dispositivos;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pessoa_id", nullable = false)
+    @JsonBackReference
     private Pessoa pessoa;
-
 }

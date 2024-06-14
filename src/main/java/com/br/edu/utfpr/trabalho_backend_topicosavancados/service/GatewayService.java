@@ -4,14 +4,18 @@ import java.io.Console;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.dto.GatewayDto;
+import com.br.edu.utfpr.trabalho_backend_topicosavancados.model.Dispositivo;
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.model.Gateway;
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.model.Pessoa;
+import com.br.edu.utfpr.trabalho_backend_topicosavancados.repository.DispositivoRepository;
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.repository.GatewayRepository;
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.repository.PessoaRepository;
 
@@ -24,16 +28,23 @@ public class GatewayService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
+    @Autowired
+    private DispositivoRepository dispositivoRepository;
+
     public Gateway createGateway(GatewayDto dto) {
-        Pessoa pessoa = new Pessoa();
-        var gateway = new Gateway();
+        Gateway gateway = new Gateway();
         BeanUtils.copyProperties(dto, gateway);
-        if (dto.pessoa() != null) {
-            Pessoa pessoaoObj = pessoaRepository.findById(dto.pessoa().getId())
-                    .orElseThrow(() -> new RuntimeException("Pessoa não encontrada com ID: " + dto.pessoa().getId()));
-            gateway.setPessoa(pessoaoObj);
-        }
-        System.out.println(gateway);
+
+        Pessoa pessoa = pessoaRepository.findById(dto.pessoaId())
+                .orElseThrow(() -> new RuntimeException("Pessoa não encontrada com ID: " + dto.pessoaId()));
+        gateway.setPessoa(pessoa);
+
+        Set<Dispositivo> dispositivos = dto.dispositivosIds().stream()
+                .map(id -> dispositivoRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Dispositivo não encontrado com ID: " + id)))
+                .collect(Collectors.toSet());
+        gateway.setDispositivos(dispositivos);
+
         return gatewayRepository.save(gateway);
     }
 

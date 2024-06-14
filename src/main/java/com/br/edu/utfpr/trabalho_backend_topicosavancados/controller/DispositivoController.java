@@ -28,7 +28,7 @@ public class DispositivoController {
     private DispositivoService dispositivoService;
 
     @PostMapping
-    @Operation(summary = "Cria um novo dispositivo", description = "Registra um novo dispositivo com os dados fornecidos")
+    @Operation(summary = "Cria um novo dispositivo", description = "Registra um novo dispositivo com os dados fornecidos", operationId = "createDispositivo")
     @ApiResponse(responseCode = "201", description = "Dispositivo criado com sucesso", content = @Content(schema = @Schema(implementation = Dispositivo.class)))
     @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
     public ResponseEntity<Object> create(@RequestBody @Valid DispositivoDTO dto) {
@@ -41,7 +41,7 @@ public class DispositivoController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualiza um dispositivo", description = "Atualiza os dados de um dispositivo existente com base no ID fornecido")
+    @Operation(summary = "Atualiza um dispositivo", description = "Atualiza os dados de um dispositivo existente com base no ID fornecido", operationId = "updateDispositivo")
     @ApiResponse(responseCode = "200", description = "Dispositivo atualizado com sucesso", content = @Content(schema = @Schema(implementation = Dispositivo.class)))
     @ApiResponse(responseCode = "404", description = "Dispositivo não encontrado")
     @ApiResponse(responseCode = "400", description = "Erro na requisição")
@@ -57,15 +57,14 @@ public class DispositivoController {
     }
 
     @GetMapping
-    @Operation(summary = "Lista todos os dispositivos", description = "Retorna uma lista de todos os dispositivos registrados")
+    @Operation(summary = "Lista todos os dispositivos", description = "Retorna uma lista de todos os dispositivos registrados", operationId = "getAllDispositivos")
     public List<Dispositivo> getAll() {
         return dispositivoService.getAllDispositivos();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Busca um dispositivo por ID", description = "Retorna detalhes de um dispositivo específico com base no seu ID")
-    @ApiResponse(responseCode = "200", description = "Dispositivo encontrado",
-                 content = @Content(schema = @Schema(implementation = Dispositivo.class)))
+    @Operation(summary = "Busca um dispositivo por ID", description = "Retorna detalhes de um dispositivo específico com base no seu ID", operationId = "getDispositivo")
+    @ApiResponse(responseCode = "200", description = "Dispositivo encontrado", content = @Content(schema = @Schema(implementation = Dispositivo.class)))
     @ApiResponse(responseCode = "404", description = "Dispositivo não encontrado")
     public ResponseEntity<Object> getById(@PathVariable("id") long id) {
         var res = dispositivoService.getDispositivoById(id);
@@ -73,5 +72,22 @@ public class DispositivoController {
         return res.isPresent()
                 ? ResponseEntity.ok(res.get())
                 : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deleta um Dispositvo", description = "Deleta um disposiitvo com base no ID fornecido", operationId = "deletedisposiitvo")
+    @ApiResponse(responseCode = "200", description = "Disposiitvo deletado com sucesso")
+    @ApiResponse(responseCode = "404", description = "Disposiitvo não encontrado")
+    @ApiResponse(responseCode = "500", description = "Erro interno ao deletar o Disposiitvo")
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
+        try {
+            dispositivoService.deleteDispositivo(id);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao deletar disposiitvo: " + e.getMessage());
+        }
     }
 }

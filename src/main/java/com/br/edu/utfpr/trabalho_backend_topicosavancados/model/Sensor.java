@@ -2,6 +2,8 @@ package com.br.edu.utfpr.trabalho_backend_topicosavancados.model;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,6 +33,7 @@ public class Sensor {
     private String tipo;
 
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
     private Set<Medicao> medicoes;
 
     @ManyToOne(fetch = FetchType.EAGER)

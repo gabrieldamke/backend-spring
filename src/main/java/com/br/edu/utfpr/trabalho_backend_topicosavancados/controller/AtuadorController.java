@@ -27,20 +27,22 @@ public class AtuadorController {
     private AtuadorService atuadorService;
 
     @PostMapping
-    @Operation(summary = "Cria um novo atuador", description = "Registra um novo atuador com os dados fornecidos no DTO")
+    @Operation(summary = "Cria um novo atuador", description = "Registra um novo atuador com os dados fornecidos no DTO", operationId = "createAtuador")
     @ApiResponse(responseCode = "201", description = "Atuador criado com sucesso", content = @Content(schema = @Schema(implementation = Atuador.class)))
     @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
     public ResponseEntity<Object> create(@RequestBody @Valid AtuadorDTO dto) {
         try {
             var res = atuadorService.createAtuador(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(res);
+        } catch (NoSuchElementException ex) {
+            return ResponseEntity.badRequest().body("Erro: " + ex.getMessage());
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao criar atuador: " + exception.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualiza um atuador existente", description = "Atualiza os dados de um atuador com base no ID fornecido")
+    @Operation(summary = "Atualiza um atuador existente", description = "Atualiza os dados de um atuador com base no ID fornecido", operationId = "updateAtuador")
     @ApiResponse(responseCode = "200", description = "Atuador atualizado com sucesso", content = @Content(schema = @Schema(implementation = Atuador.class)))
     @ApiResponse(responseCode = "404", description = "Atuador não encontrado")
     @ApiResponse(responseCode = "400", description = "Erro ao atualizar dados")
@@ -56,13 +58,13 @@ public class AtuadorController {
     }
 
     @GetMapping
-    @Operation(summary = "Lista todos os atuadores", description = "Retorna uma lista de todos os atuadores disponíveis")
+    @Operation(summary = "Lista todos os atuadores", description = "Retorna uma lista de todos os atuadores disponíveis", operationId = "getAllAtuadores")
     public List<Atuador> getAll() {
         return atuadorService.getAllAtuadores();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtém um atuador por ID", description = "Retorna detalhes de um atuador específico pelo seu ID")
+    @Operation(summary = "Obtém um atuador por ID", description = "Retorna detalhes de um atuador específico pelo seu ID", operationId = "getAtuadorById")
     @ApiResponse(responseCode = "200", description = "Atuador encontrado", content = @Content(schema = @Schema(implementation = Atuador.class)))
     @ApiResponse(responseCode = "404", description = "Atuador não encontrado")
     public ResponseEntity<Object> getById(@PathVariable("id") long id) {

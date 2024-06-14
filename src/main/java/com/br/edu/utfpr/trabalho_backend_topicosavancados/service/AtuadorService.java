@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.dto.AtuadorDTO;
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.model.Atuador;
+import com.br.edu.utfpr.trabalho_backend_topicosavancados.model.Dispositivo;
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.repository.AtuadorRepository;
+import com.br.edu.utfpr.trabalho_backend_topicosavancados.repository.DispositivoRepository;
 
 @Service
 public class AtuadorService {
@@ -18,9 +20,18 @@ public class AtuadorService {
     @Autowired
     private AtuadorRepository atuadorRepository;
 
+    @Autowired
+    private DispositivoRepository dispositivoRepository;
+
     public Atuador createAtuador(AtuadorDTO dto) {
         var atuador = new Atuador();
         BeanUtils.copyProperties(dto, atuador);
+
+        Dispositivo dispositivo = dispositivoRepository.findById(dto.dispositivoId())
+                .orElseThrow(
+                        () -> new NoSuchElementException("Dispositivo não encontrado com id: " + dto.dispositivoId()));
+
+        atuador.setDispositivo(dispositivo);
         return atuadorRepository.save(atuador);
     }
 

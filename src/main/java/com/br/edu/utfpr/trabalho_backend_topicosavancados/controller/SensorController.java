@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +34,7 @@ public class SensorController {
     @Autowired
     private SensorService sensorService;
 
-    @Operation(summary = "Cria um novo sensor", description = "Cria um novo sensor com os dados fornecidos no DTO")
+    @Operation(summary = "Cria um novo sensor", description = "Cria um novo sensor com os dados fornecidos no DTO", operationId = "createSensor")
     @ApiResponse(responseCode = "201", description = "Sensor criado com sucesso", content = @Content(schema = @Schema(implementation = Sensor.class)))
     @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
     @PostMapping
@@ -46,7 +47,7 @@ public class SensorController {
         }
     }
 
-    @Operation(summary = "Atualiza um sensor", description = "Atualiza o sensor com o ID fornecido com novos dados")
+    @Operation(summary = "Atualiza um sensor", description = "Atualiza o sensor com o ID fornecido com novos dados", operationId = "updateSensor")
     @ApiResponse(responseCode = "200", description = "Sensor atualizado com sucesso", content = @Content(schema = @Schema(implementation = Sensor.class)))
     @ApiResponse(responseCode = "404", description = "Sensor não encontrado")
     @ApiResponse(responseCode = "400", description = "Erro de solicitação")
@@ -62,14 +63,14 @@ public class SensorController {
         }
     }
 
-    @Operation(summary = "Lista todos os sensores", description = "Retorna uma lista de todos os sensores disponíveis")
+    @Operation(summary = "Lista todos os sensores", description = "Retorna uma lista de todos os sensores disponíveis", operationId = "getAllSensors")
     @GetMapping
     public List<Sensor> getAll() {
         return sensorService.getAllSensors();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Busca sensor por ID", description = "Busca um sensor específico pelo seu ID")
+    @Operation(summary = "Busca sensor por ID", description = "Busca um sensor específico pelo seu ID", operationId = "getSensorById")
     @ApiResponse(responseCode = "200", description = "Sensor encontrado", content = @Content(schema = @Schema(implementation = Sensor.class)))
     @ApiResponse(responseCode = "404", description = "Sensor não encontrado")
     public ResponseEntity<Object> getById(@PathVariable("id") long id) {
@@ -80,4 +81,20 @@ public class SensorController {
                 : ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deleta um sensor", description = "Deleta um sensor com base no ID fornecido", operationId = "deletesensor")
+    @ApiResponse(responseCode = "200", description = "Sensor deletado com sucesso")
+    @ApiResponse(responseCode = "404", description = "Sensor não encontrado")
+    @ApiResponse(responseCode = "500", description = "Erro interno ao deletar o sensor")
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
+        try {
+            sensorService.deleteSensors(id);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao deletar sensor: " + e.getMessage());
+        }
+    }
 }

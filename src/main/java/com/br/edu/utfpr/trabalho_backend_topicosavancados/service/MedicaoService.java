@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.dto.MedicaoDTO;
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.model.Medicao;
+import com.br.edu.utfpr.trabalho_backend_topicosavancados.model.Sensor;
 import com.br.edu.utfpr.trabalho_backend_topicosavancados.repository.MedicaoRepository;
+import com.br.edu.utfpr.trabalho_backend_topicosavancados.repository.SensorRepository;
 
 @Service
 public class MedicaoService {
@@ -18,9 +20,15 @@ public class MedicaoService {
     @Autowired
     private MedicaoRepository medicaoRepository;
 
+    @Autowired
+    private SensorRepository sensorRepository;
+
     public Medicao createMedicao(MedicaoDTO dto) {
         var medicao = new Medicao();
         BeanUtils.copyProperties(dto, medicao);
+        Sensor sensor = sensorRepository.findById(dto.sensorId())
+                .orElseThrow(() -> new NoSuchElementException("Sensor não encontrado para o ID: " + dto.sensorId()));
+        medicao.setSensor(sensor);
         return medicaoRepository.save(medicao);
     }
 

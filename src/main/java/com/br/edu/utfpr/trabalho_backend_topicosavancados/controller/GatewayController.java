@@ -28,7 +28,7 @@ public class GatewayController {
     private GatewayService gatewayService;
 
     @PostMapping
-    @Operation(summary = "Cria um novo gateway", description = "Cria um novo gateway com os dados fornecidos no DTO")
+    @Operation(summary = "Cria um novo gateway", description = "Cria um novo gateway com os dados fornecidos no DTO", operationId = "createGateway")
     @ApiResponse(responseCode = "201", description = "Gateway criado com sucesso", content = @Content(schema = @Schema(implementation = Gateway.class)))
     @ApiResponse(responseCode = "400", description = "Erro devido a dados inválidos")
     public ResponseEntity<Object> create(@RequestBody @Valid GatewayDto dto) {
@@ -41,7 +41,7 @@ public class GatewayController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualiza um gateway", description = "Atualiza os dados de um gateway existente com base no ID fornecido")
+    @Operation(summary = "Atualiza um gateway", description = "Atualiza os dados de um gateway existente com base no ID fornecido", operationId = "updateGateway")
     @ApiResponse(responseCode = "200", description = "Gateway atualizado com sucesso", content = @Content(schema = @Schema(implementation = Gateway.class)))
     @ApiResponse(responseCode = "404", description = "Gateway não encontrado")
     @ApiResponse(responseCode = "400", description = "Erro na requisição devido a dados inválidos")
@@ -57,13 +57,13 @@ public class GatewayController {
     }
 
     @GetMapping
-    @Operation(summary = "Lista todos os gateways", description = "Retorna uma lista de todos os gateways cadastrados")
+    @Operation(summary = "Lista todos os gateways", description = "Retorna uma lista de todos os gateways cadastrados", operationId = "getAllGateways")
     public List<Gateway> getAll() {
         return gatewayService.getAllGateways();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Busca um gateway por ID", description = "Retorna um gateway específico com base no seu ID")
+    @Operation(summary = "Busca um gateway por ID", description = "Retorna um gateway específico com base no seu ID", operationId = "getGatewayById")
     @ApiResponse(responseCode = "200", description = "Gateway encontrado", content = @Content(schema = @Schema(implementation = Gateway.class)))
     @ApiResponse(responseCode = "404", description = "Gateway não encontrado")
     public ResponseEntity<Object> getById(@PathVariable("id") long id) {
@@ -74,7 +74,7 @@ public class GatewayController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Deleta um gateway", description = "Deleta um gateway com base no ID fornecido")
+    @Operation(summary = "Deleta um gateway", description = "Deleta um gateway com base no ID fornecido", operationId = "deleteGateway")
     @ApiResponse(responseCode = "200", description = "Gateway deletado com sucesso")
     @ApiResponse(responseCode = "404", description = "Gateway não encontrado")
     @ApiResponse(responseCode = "500", description = "Erro interno ao deletar o gateway")

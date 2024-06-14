@@ -28,7 +28,7 @@ public class MedicaoController {
     private MedicaoService medicaoService;
 
     @PostMapping
-    @Operation(summary = "Cria uma nova medição", description = "Cria uma nova medição com os dados fornecidos")
+    @Operation(summary = "Cria uma nova medição", description = "Cria uma nova medição com os dados fornecidos", operationId = "createMedicao")
     @ApiResponse(responseCode = "201", description = "Medição criada com sucesso", content = @Content(schema = @Schema(implementation = Medicao.class)))
     @ApiResponse(responseCode = "400", description = "Erro nos dados fornecidos")
     public ResponseEntity<Object> create(@RequestBody @Valid MedicaoDTO dto) {
@@ -41,7 +41,7 @@ public class MedicaoController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualiza uma medição", description = "Atualiza os dados de uma medição com base no ID fornecido")
+    @Operation(summary = "Atualiza uma medição", description = "Atualiza os dados de uma medição com base no ID fornecido", operationId = "updateMedicao")
     @ApiResponse(responseCode = "200", description = "Medição atualizada com sucesso", content = @Content(schema = @Schema(implementation = Medicao.class)))
     @ApiResponse(responseCode = "404", description = "Medição não encontrada")
     @ApiResponse(responseCode = "400", description = "Erro na requisição")
@@ -57,13 +57,13 @@ public class MedicaoController {
     }
 
     @GetMapping
-    @Operation(summary = "Lista todas as medições", description = "Retorna uma lista de todas as medições registradas")
+    @Operation(summary = "Lista todas as medições", description = "Retorna uma lista de todas as medições registradas", operationId = "getAllMedicoes")
     public List<Medicao> getAll() {
         return medicaoService.getAllMedicoes();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Busca uma medição por ID", description = "Retorna detalhes de uma medição específica com base no seu ID")
+    @Operation(summary = "Busca uma medição por ID", description = "Retorna detalhes de uma medição específica com base no seu ID", operationId = "getMedicaoById")
     @ApiResponse(responseCode = "200", description = "Medição encontrada", content = @Content(schema = @Schema(implementation = Medicao.class)))
     @ApiResponse(responseCode = "404", description = "Medição não encontrada")
     public ResponseEntity<Object> getById(@PathVariable("id") long id) {
@@ -72,5 +72,22 @@ public class MedicaoController {
         return res.isPresent()
                 ? ResponseEntity.ok(res.get())
                 : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deleta um medicao", description = "Deleta um medicção com base no ID fornecido", operationId = "deleteMedicao")
+    @ApiResponse(responseCode = "200", description = "Medição deletado com sucesso")
+    @ApiResponse(responseCode = "404", description = "Medição não encontrado")
+    @ApiResponse(responseCode = "500", description = "Erro interno ao deletar o medicao")
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
+        try {
+            medicaoService.deleteMedicao(id);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao deletar medicao: " + e.getMessage());
+        }
     }
 }

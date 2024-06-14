@@ -2,6 +2,8 @@ package com.br.edu.utfpr.trabalho_backend_topicosavancados.model;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,13 +21,15 @@ import lombok.Data;
 @Entity
 @Table(name = "tb_dispositivo")
 public class Dispositivo {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false)
+    private String descricao;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "gateway_id", nullable = false)
@@ -35,5 +39,12 @@ public class Dispositivo {
     private Set<Sensor> sensores;
 
     @OneToMany(mappedBy = "dispositivo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
     private Set<Atuador> atuadores;
+
+    @Column(nullable = true)
+    private Double latitude;
+
+    @Column(nullable = true)
+    private Double longitude;
 }
