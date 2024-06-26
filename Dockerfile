@@ -6,6 +6,6 @@ RUN mvn clean package -Dmaven.test.skip
 
 FROM openjdk:17-jdk-alpine
 EXPOSE 8080
-COPY --from=build /app/target/*.jar app.
+COPY --from=build /app/target/*.jar app.jar
 COPY ./src/main/resources/application.properties application.properties
 ENTRYPOINT ["java","-jar","/app.jar"]
